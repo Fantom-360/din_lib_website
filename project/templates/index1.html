@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="script" type="text/script" href="{{ url_for('scripts', filename='mainscr.js') }}">
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+    <div class="frontbar">
+        <!--<button type="submit" class="text1">Home</button>-->
+        <div class="main">Books</div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+</div>
+<div class="menu" id="menu">
+    <a class="odkaz" href="/home">Home</a>
+    <a class="odkaz" href="/books">Books</a>
+    <a class="odkaz" href="/sign_up">Sign up</a>
+    <a class="odkaz" href="/log_in">Log in</a>
+</div>
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById('menu');
+        menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
+</script>
+{% for book in books %}
+<div class="book" onclick="showBookDetails({{ book.id }})">
+    <h3>{{ book.title }}</h3>
+    <p>{{ book.author }}</p>
+    {% if book.is_borrowed %}
+        <p style="color: red">Borrowed</p>
+        {% else %}
+            <p style="color: green">Availavle</p>
+        {% endif %}
+</div>
+{% endfor %}
+<div id="bookPopup" class="popup">
+    <div class="popup-content">
+        <h2 id="bookTitle"></h2>
+        <p id="bookAuthor"></p>
+        <p id="bookDesc"></p>
+        <button id="borrowButton" onclick="borrowBook()">Borrow</button>
+        <button onclick="closePopup()">Close</button>
+    </div>
+</div>
+<div class="book-carousel">
+    <button class="arrow left" onclick="scrollLeft()">❮</button>
+
+    <div class="book-slider">
+        {% for book in books %}
+        <div class="book-card">
+            <img src="{{ book.image_url }}" alt="{{ book.title }}">
+            <h3>{{ book.title }}</h3>
+            <p>{{ book.author }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <button class="arrow right" onclick="scrollRight()">❯</button>
+</div>
+<div class="genre-bar">
+    {% for genre in genres %}
+    <button class="genre-button" onclick="filterGenre('{{ genre.name }}')">{{ genre.name }}</button>
+    {% endfor %}
+</div>
+
+
+</body>
+</html>
